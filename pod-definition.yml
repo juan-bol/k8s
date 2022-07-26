@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: myapp-pod
+  labels:
+    name: myapp
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    resources:
+      limits:
+        memory: "256Mi"
+        cpu: "500m"
+  # - name: ubuntu-sleeper
+  #   image: juanbol/ubuntu-sleeper:ubuntu-sleeper
+  #   args:
+  #     - "10"
+  #   resources:
+  #     limits:
+  #       memory: "256Mi"
+  #       cpu: "500m"
