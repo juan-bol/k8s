@@ -1,4 +1,5 @@
-cat alias k=kubectl >> /.bashrc && source .bashrc
+echo alias k=kubectl >> ~/.bashrc && source ~/.bashrc
+
 
 cd k8s_manifests
 kubectl create -f pod-definition.yml
@@ -33,6 +34,18 @@ kubectl apply -f deployment.yaml
 
 If the rs is scaled up or down it will return to its previous config because the deployment manages the rs
 
-To create containers for an specific jobs, only restarts on failure
+To create containers for an specific jobs, that only restarts on failure:
 kubectl create cronjob my-job --image=busybox --schedule="*/1 * * * *" -- date
 kubectl get po -w
+
+kubectl create deployment httpenv --image=bretfisher/httpenv --replicas=3
+kubectl expose deployment httpenv --port=8888   
+kubectl apply -f shpod.yml
+kubectl attach -n shpod -ti shpod
+IP=$(kubectl get svc httpenv -o go-template --template '{{ .spec.clusterIP }}')
+curl -s 10.97.229.34:8888 | jq .HOSTNAME
+
+Each service has endpoints (pod host+port), to check them do
+kubectl describe svc httpenv
+kubectl get endpoints httpenv -o yaml
+kubectl get po -l app=httpenv -o wide
